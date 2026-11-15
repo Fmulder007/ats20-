@@ -251,20 +251,20 @@ Band g_bandList[] =
 uint16_t SWSubBands[] =
 {
     SW_LIMIT_LOW,  // 160 Meter
-    3500, // 80 Meter
+    3600, // 80 Meter
     4500, 
     5600,
-    6800, // 40 Meter
-    7200, // 41 Meter
+    6600, // 40 Meter
+    7100, // 41 Meter
     8500, 
-    10000, // 30 Meter
+    10100, // 30 Meter
     11200,
     13400, 
-    14000, // 20 Meter
+    14200, // 20 Meter
     15000,
     17200, 
-    18000, // 17 Meter
-    21000, // 15 Meter
+    18100, // 17 Meter
+    21200, // 15 Meter
     21400, // 13 Meter
     24890, // 12 Meter
     CB_LIMIT_LOW, // CB Band (11 Meter)
