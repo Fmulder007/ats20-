@@ -10,10 +10,10 @@
 // http://github.com/goshante
 // ----------------------------------------------------------------------
 
-#include <SI4735.h>
+#include "SI4735.h"
 #include <EEPROM.h>
-#include <Tiny4kOLED.h>
-#include <PixelOperatorBold.h> 
+#include "Tiny4kOLED.h"
+#include "PixelOperatorBold.h"
 
 #include "font14x24sevenSeg.h"
 #include "Rotary.h"
