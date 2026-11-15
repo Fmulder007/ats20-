@@ -367,14 +367,18 @@ void readAllReceiverInformation(bool loadSWBandFrequencies)
     g_volume = EEPROM.read(addr++);
     g_bandIndex = EEPROM.read(addr++);
     g_currentMode = EEPROM.read(addr++);
-    g_currentBFO = (EEPROM.read(addr++) << 8) | EEPROM.read(addr++);
+    uint8_t bfoHigh = EEPROM.read(addr++);
+    uint8_t bfoLow = EEPROM.read(addr++);
+    g_currentBFO = (int16_t)(((uint16_t)bfoHigh << 8) | bfoLow);
     g_FMStepIndex = EEPROM.read(addr++);
     g_prevMode = EEPROM.read(addr++);
     g_bwIndexSSB = EEPROM.read(addr++);
 
     for (uint8_t i = 0; i <= g_lastBand; i++)
     {
-        g_bandList[i].currentFreq = (EEPROM.read(addr++) << 8) | EEPROM.read(addr++);
+        uint8_t freqHigh = EEPROM.read(addr++);
+        uint8_t freqLow = EEPROM.read(addr++);
+        g_bandList[i].currentFreq = ((uint16_t)freqHigh << 8) | freqLow;
         g_bandList[i].currentStepIdx = EEPROM.read(addr++);
         g_bandList[i].bandwidthIdx = EEPROM.read(addr++);
     }
@@ -390,7 +394,9 @@ void readAllReceiverInformation(bool loadSWBandFrequencies)
 
         for (uint8_t i = 0; i < g_SWSubBandCount; i++)
         {
-            g_swBandFreq[i] = (EEPROM.read(addr++) << 8) | EEPROM.read(addr++);
+            uint8_t freqHigh = EEPROM.read(addr++);
+            uint8_t freqLow = EEPROM.read(addr++);
+            g_swBandFreq[i] = ((uint16_t)freqHigh << 8) | freqLow;
             getValidSWBandFrequency(i);
         }
     }
@@ -518,7 +524,7 @@ void showFrequency(bool cleanDisplay = false)
             oledPrint("/");
     }
 
-    if (g_Settings[SettingsIndex::UnitsSwitch].param == 1 && (!isSSB() || isSSB() && len < 5))
+    if (g_Settings[SettingsIndex::UnitsSwitch].param == 1 && (!isSSB() || len < 5))
         oledPrint(unit, 102, 4, DEFAULT_FONT);
         
     prevLen = len;
@@ -1039,20 +1045,20 @@ void showSMeter()
 //Draw bandwidth (Ignored for CW mode)
 void showBandwidth()
 {
-    char* bw;
+    const char* bw;
     if (isSSB())
     {
-        bw = (char*)g_bandwidthSSB[g_bwIndexSSB].desc;
+        bw = g_bandwidthSSB[g_bwIndexSSB].desc;
         if (g_currentMode == CW)
             bw = "    ";
     }
     else if (g_currentMode == AM)
     {
-        bw = (char*)g_bandwidthAM[g_bwIndexAM].desc;
+        bw = g_bandwidthAM[g_bwIndexAM].desc;
     }
     else
     {
-        bw = (char*)g_bandwidthFM[g_bwIndexFM];
+        bw = g_bandwidthFM[g_bwIndexFM];
     }
 
     oledPrint(bw, 45, 0, DEFAULT_FONT, g_cmdBw);
@@ -1173,7 +1179,7 @@ void setRDSConfig(uint8_t bias)
 #endif
 
 //Update receiver settings after changing band and modulation
-void applyBandConfiguration(bool extraSSBReset = false)
+void applyBandConfiguration(bool extraSSBReset)
 {
     g_si4735.setTuneFrequencyAntennaCapacitor(uint16_t(g_bandIndex == SW_BAND_TYPE));
     if (g_bandIndex == FM_BAND_TYPE)
@@ -1297,7 +1303,7 @@ void doStep(int8_t v)
             && v != 1 && g_stepIndex > g_amTotalStepsSSB && g_stepIndex < g_amTotalSteps)
             g_stepIndex = g_amTotalStepsSSB;
 
-        if (!isSSB() || isSSB() && g_stepIndex < g_amTotalSteps)
+        if (!isSSB() || g_stepIndex < g_amTotalSteps)
         {
             g_si4735.setFrequencyStep(g_tabStep[g_stepIndex]);
             g_bandList[g_bandIndex].currentStepIdx = g_stepIndex;
@@ -1379,7 +1385,7 @@ void doBrightness(int8_t v)
 }
 
 //Settings: SSB AVC Switch
-void doSSBAVC(int8_t v = 0)
+void doSSBAVC(int8_t v)
 {
     doSwitchLogic(g_Settings[SettingsIndex::SVC].param, 0, 1, v);
 
@@ -1400,7 +1406,7 @@ void doAvc(int8_t v)
 }
 
 //Settings: Sync switch
-void doSync(int8_t v = 0)
+void doSync(int8_t v)
 {
     doSwitchLogic(g_Settings[SettingsIndex::Sync].param, 0, 1, v);
 
@@ -1413,7 +1419,7 @@ void doSync(int8_t v = 0)
 }
 
 //Settings: FM DeEmp switch (50 or 75)
-void doDeEmp(int8_t v = 0)
+void doDeEmp(int8_t v)
 {
     doSwitchLogic(g_Settings[SettingsIndex::DeEmp].param, 0, 1, v);
 
@@ -1422,13 +1428,13 @@ void doDeEmp(int8_t v = 0)
 }
 
 //Settings: SW Units
-void doSWUnits(int8_t v = 0)
+void doSWUnits(int8_t v)
 {
     doSwitchLogic(g_Settings[SettingsIndex::SWUnits].param, 0, 1, v);
 }
 
 //Settings: SW Units
-void doSSBSoftMuteMode(int8_t v = 0)
+void doSSBSoftMuteMode(int8_t v)
 {
     doSwitchLogic(g_Settings[SettingsIndex::SSM].param, 0, 1, v);
 
@@ -1446,7 +1452,7 @@ void doCutoffFilter(int8_t v)
 }
 
 //Settings: CPU Frequency divider
-void doCPUSpeed(int8_t v = 0)
+void doCPUSpeed(int8_t v)
 {
     doSwitchLogic(g_Settings[SettingsIndex::CPUSpeed].param, 0, 1, v);
 
@@ -1477,13 +1483,13 @@ void doUnitsSwitch(int8_t v)
 }
 
 //Settings: Scan button switch
-void doScanSwitch(int8_t v = 0)
+void doScanSwitch(int8_t v)
 {
     doSwitchLogic(g_Settings[SettingsIndex::ScanSwitch].param, 0, 1, v);
 }
 
 //Settings: CW mode switch
-void doCWSwitch(int8_t v = 0)
+void doCWSwitch(int8_t v)
 {
     doSwitchLogic(g_Settings[SettingsIndex::CWSwitch].param, 0, 1, v);
 
@@ -1712,7 +1718,8 @@ void doFrequencyTuneSSB()
 
 void loop()
 {
-    uint8_t x;
+    uint8_t agcEventResult = 0;
+    uint8_t stepEventResult = 0;
     bool skipButtonEvents = false;
     bool frequencyRecentlyUpdated = millis() - g_lastFreqChange < 70;
 
@@ -1908,10 +1915,10 @@ void loop()
     //Be processed without complicated overhead
     //It requires to save checkEvent result into a variable
     //That has exact same name as event processing function for this button
-    uint8_t agcEvent = btn_AGC.checkEvent(agcEvent);
-    if (BUTTONEVENT_SHORTPRESS == agcEvent)
+    agcEventResult = btn_AGC.checkEvent(agcEvent);
+    if (BUTTONEVENT_SHORTPRESS == agcEventResult)
     {
-        if (!g_settingsActive || g_settingsActive && !g_displayOn)
+        if (!g_settingsActive || !g_displayOn)
         {
             g_displayOn = !g_displayOn;
             if (g_displayOn)
@@ -1920,7 +1927,7 @@ void loop()
                 oled.off();
         }
     }
-    if (BUTTONEVENT_LONGPRESS == agcEvent)
+    if (BUTTONEVENT_LONGPRESS == agcEventResult)
     {
         if (!g_settingsActive)
         {
@@ -1928,8 +1935,8 @@ void loop()
                 doSync(1);
         }
     }
-    uint8_t stepEvent = btn_Step.checkEvent(stepEvent);
-    if (BUTTONEVENT_SHORTPRESS == stepEvent)
+    stepEventResult = btn_Step.checkEvent(stepEvent);
+    if (BUTTONEVENT_SHORTPRESS == stepEventResult)
     {
         if (!g_settingsActive)
         {
@@ -1937,7 +1944,7 @@ void loop()
             resetLowerLine();
         }
     }
-    if (BUTTONEVENT_LONGPRESSDONE == stepEvent)
+    if (BUTTONEVENT_LONGPRESSDONE == stepEventResult)
     {
         if (!g_settingsActive)
         {
@@ -1966,7 +1973,7 @@ void loop()
                     //Patch Si473x memory every time when enabling SSB
                     loadSSBPatch();
                     g_processFreqChange = false;
-                    //Allow pass through
+                    // fall through: AM continues through the LSB case.
 
                 case LSB:
                     g_currentMode++;
