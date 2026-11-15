@@ -159,7 +159,7 @@ Bandwidth g_bandwidthAM[] =
 };
 
 int8_t g_bwIndexFM = 0;
-char* g_bandwidthFM[] =
+const char* g_bandwidthFM[] =
 {
     "AUTO",
     "110k",
@@ -232,7 +232,7 @@ char* g_RDSCells[3];
 
 char _literal_EmptyLine[17] = "                ";
 
-char* bandTags[] =
+const char* bandTags[] =
 {
     "LW",
     "MW",
