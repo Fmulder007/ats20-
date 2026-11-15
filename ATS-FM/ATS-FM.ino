@@ -246,7 +246,7 @@ uint8_t volumeEvent(uint8_t event, uint8_t pin)
     return event;
 }
 
-uint8_t simpleEvent(uint8_t event, uint8_t pin)
+uint8_t simpleEvent(uint8_t event, uint8_t)
 {
     if (BUTTONEVENT_FIRSTLONGPRESS == event)
         event = BUTTONEVENT_SHORTPRESS;
@@ -1972,8 +1972,7 @@ void loop()
                     //Patch Si473x memory every time when enabling SSB
                     loadSSBPatch();
                     g_processFreqChange = false;
-                    // fall through: AM continues through the LSB case.
-
+                    [[fallthrough]]; // AM continues through the LSB case.
                 case LSB:
                     g_currentMode++;
                     g_bandList[g_bandIndex].currentFreq += g_currentBFO / 1000;
