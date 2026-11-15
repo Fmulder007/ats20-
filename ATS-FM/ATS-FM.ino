@@ -10,19 +10,19 @@
 // http://github.com/goshante
 // ----------------------------------------------------------------------
 
-#include "SI4735.h"
+#include "src/SI4735.h"
 #include <EEPROM.h>
-#include "Tiny4kOLED.h"
-#include "PixelOperatorBold.h"
+#include "src/Tiny4kOLED.h"
+#include "src/PixelOperatorBold.h"
 
-#include "font14x24sevenSeg.h"
-#include "Rotary.h"
-#include "SimpleButton.h"
-#include "patch_ssb_compressed.h"
+#include "src/font14x24sevenSeg.h"
+#include "src/Rotary.h"
+#include "src/SimpleButton.h"
+#include "src/patch_ssb_compressed.h"
 
-#include "defs.h"
-#include "globals.h"
-#include "Utils.h"
+#include "src/defs.h"
+#include "src/globals.h"
+#include "src/Utils.h"
 
 void showStatus(bool cleanFreq = false);
 void applyBandConfiguration(bool extraSSBReset = false);
