@@ -26,6 +26,7 @@
 
 void showStatus(bool cleanFreq = false);
 void applyBandConfiguration(bool extraSSBReset = false);
+void readAllReceiverInformation(bool loadSWBandFrequencies = true);
 
 bool isSSB()
 {
@@ -359,7 +360,7 @@ void saveAllReceiverInformation()
 }
 
 //EEPROM Load
-void readAllReceiverInformation(bool loadSWBandFrequencies = true)
+void readAllReceiverInformation(bool loadSWBandFrequencies)
 {
     uint8_t addr = EEPROM_DATA_START_ADDRESS;
     int8_t bwIdx;
