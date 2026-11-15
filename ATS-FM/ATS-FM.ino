@@ -1161,7 +1161,7 @@ void loadSSBPatch()
 {
     // This works, but i am not sure it's safe
     //g_si4735.setI2CFastModeCustom(700000);
-    g_si4735.setI2CFastModeCustom(500000);
+    g_si4735.setI2CFastModeCustom(250000);
     g_si4735.queryLibraryId(); //Do we really need this? Research it.
     g_si4735.patchPowerUp();
     delay(50);
