@@ -1071,9 +1071,6 @@ void bandSwitch(bool up)
 
         if (canMoveInsideSW)
         {
-            // Save the subband being left immediately.
-            saveAllReceiverInformation();
-
             if (up)
                 g_swBandIndex++;
             else
@@ -1086,6 +1083,9 @@ void bandSwitch(bool up)
             // A corrupt/out-of-range EEPROM value falls back to SWSubBands[index].
             g_currentFrequency = getValidSWBandFrequency(g_swBandIndex);
             g_bandList[SW_BAND_TYPE].currentFreq = g_currentFrequency;
+
+            // Save both the subband being left and the newly selected subband.
+            saveAllReceiverInformation();
             g_si4735.setFrequency(g_currentFrequency);
             agcSetFunc(); // Re-apply to remove noise.
             showFrequency();
