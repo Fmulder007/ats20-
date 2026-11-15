@@ -35,7 +35,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{fabf0e8c-d02a-47fe-a9ab-573ea614a543}</ProjectGuid>
+    <ProjectGuid>{A15F4A81-2EBC-4F47-9D17-BAA07C6D9201}</ProjectGuid>
     <Keyword>Linux</Keyword>
     <RootNamespace>ATSFM</RootNamespace>
     <ProjectName>ATS-FM</ProjectName>
