@@ -129,7 +129,7 @@ static void ssd1306_send_command7(uint8_t command1, uint8_t command2, uint8_t co
 	ssd1306_send_stop();
 }
 
-static uint8_t invertByte(uint8_t x, uint8_t y, uint8_t byte) {
+static uint8_t invertByte(uint8_t, uint8_t, uint8_t byte) {
 	return byte ^ 0xff;
 }
 
