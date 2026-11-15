@@ -3517,9 +3517,11 @@ void SI4735::convertToChar(uint16_t value, char *strValue, uint8_t len, uint8_t 
  * @param size - char array size
  */
 void SI4735::removeUnwantedChar(char *str, int size) {
-  for (int i = 0; str[i] != '\0' && i < size; i++) 
-    if ( str[i] != 0 && str[i] < 32 ) str[i] = ' ';
-    str[size-1] = '\0';
+  for (int i = 0; i < size && str[i] != '\0'; i++) {
+    if (str[i] < 32) str[i] = ' ';
+  }
+  if (size > 0)
+    str[size - 1] = '\0';
 }
 
 /**
