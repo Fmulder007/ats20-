@@ -25,6 +25,7 @@
 #include "src/Utils.h"
 
 void showStatus(bool cleanFreq = false);
+void showFrequency(bool cleanDisplay = false);
 void applyBandConfiguration(bool extraSSBReset = false);
 void readAllReceiverInformation(bool loadSWBandFrequencies = true);
 
@@ -456,7 +457,7 @@ void resetEepromDelay()
 //Draw frequency. 
 //BFO and main frequency produce actual frequency that is displayed on LCD
 //Too sensitive logic, do not change
-void showFrequency(bool cleanDisplay = false)
+void showFrequency(bool cleanDisplay)
 {
     if (g_settingsActive)
         return;
@@ -1911,10 +1912,8 @@ void loop()
             doSeek();
     }
 
-    //This is a hack, it allows SHORTPRESS and LONGPRESS events
-    //Be processed without complicated overhead
-    //It requires to save checkEvent result into a variable
-    //That has exact same name as event processing function for this button
+    // Save checkEvent() results separately from the callback function names.
+    // This keeps the callback visible and allows short/long press handling.
     agcEventResult = btn_AGC.checkEvent(agcEvent);
     if (BUTTONEVENT_SHORTPRESS == agcEventResult)
     {
